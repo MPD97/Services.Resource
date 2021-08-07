@@ -1,4 +1,20 @@
 ﻿using System.Threading.Tasks;
+using Convey;
+using Convey.CQRS.Queries;
+using Convey.Logging;
+using Convey.Secrets.Vault;
+using Convey.Types;
+using Convey.WebApi;
+using Convey.WebApi.CQRS;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using Services.Resource.Application;
+using Services.Resource.Application.Commands;
+using Services.Resource.Application.DTO;
+using Services.Resource.Application.Queries;
+using Services.Resource.Infrastructure;
 
 namespace Services.Resource.Api
 {
@@ -20,12 +36,9 @@ namespace Services.Resource.Api
                     .UseInfrastructure()
                     .UseDispatcherEndpoints(endpoints => endpoints
                         .Get("", ctx => ctx.Response.WriteAsync(ctx.RequestServices.GetService<AppOptions>().Name))
-                        .Get<GetRoute, RouteDto>("routes/{routeId}")
-                        .Get<SearchRoutes, PagedResult<RouteDto>>("routes")
-                        .Post<CreateRoute>("routes",
-                            afterDispatch: (cmd, ctx) => ctx.Response.Created($"routes/{cmd.RouteId}"))
-                        .Put<ChangeRouteStatus>("routes/{routeId}/status/{status}",
-                            afterDispatch: (cmd, ctx) => ctx.Response.NoContent())))
+                        .Get<SearchResources, PagedResult<TextResourceDto>>("resources")
+                        .Post<CreateTextResource>("resources",
+                            afterDispatch: (cmd, ctx) => ctx.Response.Created())))
                 .UseLogging()
                 .UseVault();
     }

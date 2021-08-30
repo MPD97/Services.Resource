@@ -24,6 +24,7 @@ namespace Services.Resource.Api
             => await CreateWebHostBuilder(args)
                 .Build()
                 .RunAsync();
+
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
             => WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(services => services
@@ -39,7 +40,6 @@ namespace Services.Resource.Api
                         .Get<SearchResources, PagedResult<TextResourceDto>>("resources")
                         .Post<CreateTextResource>("resources",
                             afterDispatch: (cmd, ctx) => ctx.Response.Created())))
-                .UseLogging()
-                .UseVault();
+                .UseLogging();
     }
 }
